@@ -222,10 +222,23 @@ public class FwControllers {
         report.setFieldWorker(dto.getWorkerName()); // String field
         report.setFwEntity(fwRepository.findById(dto.getWorkerId()).orElse(null));
         report.setReportStatus(ReportStatus.PASS_TO_WORKER);
+        return null;
 
-        reportsRepository.save(report);
+    }
 
-        return ResponseEntity.ok("Report assigned successfully");
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getFwProfileById(@PathVariable Long id) {
+
+        try {
+            FwEntity fwEntity = fwRepository.findById(id).get();
+
+            return ResponseEntity.ok(fwEntity);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+
     }
 
 }

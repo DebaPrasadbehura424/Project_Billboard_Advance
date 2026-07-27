@@ -9,17 +9,15 @@ import {
   Menu,
   X,
   ShieldCheck,
-  Eye,
 } from "lucide-react";
 import { Button } from "../../components/Button";
 import { useSuper } from "../../hooks/useSuper";
-import { useNavigate } from "react-router-dom";
 import HeatMap from "../public/HeatMap";
 import axios from "axios";
+import { ReportTable } from "../../components/ReportTable";
 
 const AdminDashboard: React.FC = () => {
-  const { reports, approvedFw, loading, error, refreshData } = useSuper();
-  const navigate = useNavigate();
+  const { reports, approvedFw, refreshData } = useSuper();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState<any>(null);
@@ -35,30 +33,6 @@ const AdminDashboard: React.FC = () => {
     { id: "verify", label: "Sent for Verification", icon: CheckCircle },
     { id: "heatmap", label: "HeatMap", icon: CheckCircle },
   ];
-
-  const handleViewReport = (reportId: any) => {
-    navigate(`/admin_dash/report/${reportId}`);
-  };
-
-  const getStatusClass = (status: string) => {
-    switch (status?.toUpperCase()) {
-      case "WORK_DONE":
-        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-      case "RESPOND_TAKEN":
-        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400";
-      case "ACTIVATED_BY_ADMIN":
-      case "ACTIVATED_BY_DEPARTMENT":
-        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
-      case "PASS_TO_WORKER":
-        return "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400";
-      case "SEEN":
-        return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400";
-      case "RE_SUBMITTED":
-        return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
-      default:
-        return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
-    }
-  };
 
   const handleAssignReport = async (worker: any, report: any) => {
     if (!worker || !report) return;
@@ -225,85 +199,11 @@ const AdminDashboard: React.FC = () => {
 
           {/* ALL REPORTS */}
           {activePage === "reports" && (
-            <div className="max-w-7xl mx-auto text-white">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold">All Citizen Reports</h2>
-                <Button onClick={refreshData} variant="secondary">
-                  Refresh
-                </Button>
-              </div>
-
-              {loading ? (
-                <p className="text-center py-12 text-gray-500">
-                  Loading reports...
-                </p>
-              ) : error ? (
-                <p className="text-center py-12 text-red-500">{error}</p>
-              ) : reports.length === 0 ? (
-                <p className="text-center py-12 text-gray-500">
-                  No reports available
-                </p>
-              ) : (
-                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-gray-100 dark:bg-gray-800">
-                      <tr>
-                        <th className="p-6 text-left">Issue</th>
-                        <th className="p-6 text-left">Citizen</th>
-                        <th className="p-6 text-left">Location</th>
-                        <th className="p-6 text-left">Risk</th>
-                        <th className="p-6 text-left">Status</th>
-                        <th className="p-6 text-center">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y dark:divide-gray-700">
-                      {reports.map((report) => (
-                        <tr
-                          key={report.reportId}
-                          className="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                        >
-                          <td className="p-6">
-                            <div className="font-medium">{report.category}</div>
-                            <div className="text-sm text-gray-500 line-clamp-1 mt-1">
-                              {report.title || "No description"}
-                            </div>
-                          </td>
-                          <td className="p-6">
-                            {report.citizenName || "Unknown"}
-                          </td>
-                          <td className="p-6 text-gray-600 dark:text-gray-400">
-                            {report.location}
-                          </td>
-                          <td className="p-6">
-                            <span
-                              className={`px-4 py-1 rounded-full text-xs font-medium ${report.riskLevel === "High" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" : "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"}`}
-                            >
-                              {report.riskLevel || "Medium"}
-                            </span>
-                          </td>
-                          <td className="p-6">
-                            <span
-                              className={`px-4 py-1 rounded-full text-xs font-medium ${getStatusClass(report.reportStatus)}`}
-                            >
-                              {report.reportStatus}
-                            </span>
-                          </td>
-                          <td className="p-6 text-center">
-                            <button
-                              onClick={() => handleViewReport(report.reportId)}
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition"
-                            >
-                              <Eye size={18} />
-                              View
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+            <ReportTable
+              data={reports}
+              liveCount={reports.length}
+              formatDate={new Date().toLocaleDateString()}
+            />
           )}
 
           {/* FIELD WORKERS */}

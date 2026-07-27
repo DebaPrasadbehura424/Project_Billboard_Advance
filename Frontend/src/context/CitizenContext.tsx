@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export interface Report {
   reportId: number;
+  title: string;
   description: string;
   riskPercentage: number;
   riskLevel: string;
@@ -74,6 +75,7 @@ export const CitizenProvider: React.FC<{ children: ReactNode }> = ({
 
       const citizen = citizenRes.data;
       const reports = reportsRes.data;
+      console.log(reports);
 
       const resolvedCount = reports.filter(
         (r: Report) => r.reportStatus === "RESOLVED",

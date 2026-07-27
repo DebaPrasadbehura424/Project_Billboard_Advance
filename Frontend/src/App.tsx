@@ -12,6 +12,8 @@ import { SuperProvider } from "./context/SuperContext";
 import FwDashboard from "./pages/fw/FwDashboard";
 import FwHome from "./pages/public/FwHome";
 import { ReportView } from "./pages/private/ReportView";
+import FwProfile from "./pages/private/FwProfile";
+import AdminProfile from "./pages/private/AdminProfile";
 
 function App() {
   return (
@@ -20,18 +22,36 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/super_admin" element={<SuperAdminHome />} />
 
-        <Route path="/fw_dash" element={<FwDashboard />} />
         <Route path="/fw_home" element={<FwHome />} />
+        <Route path="/super_admin" element={<SuperAdminHome />} />
+        <Route path="/admin_home" element={<AdminHome />} />
 
         <Route path="/my-reports/:id" element={<ReportView />} />
+
+        <Route path="/fw_dash" element={<FwDashboard />} />
 
         <Route
           path="/super_dash"
           element={
             <SuperProvider>
               <SuperAdminDashboard />
+            </SuperProvider>
+          }
+        />
+        <Route
+          path="/adminprofile/:id"
+          element={
+            <SuperProvider>
+              <AdminProfile />
+            </SuperProvider>
+          }
+        />
+        <Route
+          path="/fwprofile/:id"
+          element={
+            <SuperProvider>
+              <FwProfile />
             </SuperProvider>
           }
         />
@@ -46,7 +66,7 @@ function App() {
         />
 
         <Route
-          path="/cdash/report/:id" // or "/my-reports/:id"
+          path="/my-reports/:id"
           element={
             <CitizenProvider>
               <ReportView />
@@ -55,7 +75,6 @@ function App() {
         />
 
         {/* admin */}
-        <Route path="/admin_home" element={<AdminHome />} />
         <Route
           path="/admin_dash"
           element={
@@ -66,7 +85,7 @@ function App() {
         />
 
         <Route
-          path="/admin_dash/report/:id" // or "/my-reports/:id"
+          path="/my-reports/:id"
           element={
             <SuperProvider>
               <ReportView />

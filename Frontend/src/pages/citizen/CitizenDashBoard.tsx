@@ -43,7 +43,7 @@ const CitizenDashboard: React.FC = () => {
         <div className="p-6 border-b dark:border-gray-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div>
-              <h1 className="text-2xl font-bold">Nagrik NaZar</h1>
+              <h1 className="text-2xl font-bold text-white">Nagrik NaZar</h1>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Citizen Portal
               </p>
@@ -81,7 +81,7 @@ const CitizenDashboard: React.FC = () => {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all ${
                     activePage === item.id
                       ? "bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-medium"
-                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800 text-white"
                   }`}
                 >
                   <Icon size={20} />
@@ -123,7 +123,7 @@ const CitizenDashboard: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <button className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-white">
               <Bell size={22} />
             </button>
 
@@ -143,7 +143,7 @@ const CitizenDashboard: React.FC = () => {
           {activePage === "dashboard" && (
             <div className="max-w-7xl mx-auto space-y-8">
               <div>
-                <h1 className="text-4xl font-bold">
+                <h1 className="text-4xl font-bold text-white">
                   Welcome back, {user?.name} 👋
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -171,7 +171,9 @@ const CitizenDashboard: React.FC = () => {
                     className="bg-white dark:bg-gray-900 p-6 rounded-3xl shadow"
                   >
                     <div className="text-4xl mb-3">{stat.icon}</div>
-                    <h3 className="text-3xl font-bold">{stat.value}</h3>
+                    <h3 className="text-3xl font-bold text-white">
+                      {stat.value}
+                    </h3>
                     <p className="text-gray-600 dark:text-gray-400">
                       {stat.label}
                     </p>
@@ -179,7 +181,9 @@ const CitizenDashboard: React.FC = () => {
                 ))}
               </div>
 
-              <h3 className="text-2xl font-semibold mt-8">Recent Reports</h3>
+              <h3 className="text-2xl font-semibold mt-8 text-white">
+                Recent Reports
+              </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Placeholder for development stage */}
                 <p className="text-gray-500">

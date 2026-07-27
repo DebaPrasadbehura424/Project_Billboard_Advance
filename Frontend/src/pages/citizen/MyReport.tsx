@@ -80,10 +80,7 @@ export const Myreport: React.FC = () => {
                   >
                     <td className="p-6">
                       <div className="font-medium text-white">
-                        {report.category}
-                      </div>
-                      <div className="text-sm text-gray-400 line-clamp-2 mt-1">
-                        {report.description}
+                        {report.title || "no Title Here"}
                       </div>
                     </td>
                     <td className="p-6 text-gray-400">

@@ -204,4 +204,19 @@ public class AdminControllers {
 
         return ResponseEntity.ok("Status updated successfully");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAdminById(@PathVariable Long id) {
+
+        try {
+            AdminEntity adminEntity = adminRepository.findById(id).get();
+
+            return ResponseEntity.ok(adminEntity);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+
+    }
 }

@@ -78,6 +78,9 @@ const SuperAdminDashboard: React.FC = () => {
         })
       : "N/A";
   };
+  {
+    console.log(pendingAdmins);
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex overflow-hidden">
@@ -259,7 +262,6 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
           )}
 
-          {/* PENDING APPROVALS */}
           {activeTab === "pending" && (
             <div className="space-y-10">
               <DataTablePending
@@ -268,6 +270,7 @@ const SuperAdminDashboard: React.FC = () => {
                 type="admin"
                 onStatusUpdate={handleStatusUpdate}
                 formatDate={formatDate}
+                userProfile={"/adminprofile"}
               />
               <DataTablePending
                 title="Pending Field Worker Applications"
@@ -275,6 +278,7 @@ const SuperAdminDashboard: React.FC = () => {
                 type="fw"
                 onStatusUpdate={handleStatusUpdate}
                 formatDate={formatDate}
+                userProfile={"/fwprofile"}
               />
             </div>
           )}
@@ -288,6 +292,7 @@ const SuperAdminDashboard: React.FC = () => {
               onStatusUpdate={handleStatusUpdate}
               formatDate={formatDate}
               showAllStatus
+              userProfile={"/adminprofile"}
             />
           )}
 
@@ -300,6 +305,7 @@ const SuperAdminDashboard: React.FC = () => {
               onStatusUpdate={handleStatusUpdate}
               formatDate={formatDate}
               showAllStatus
+              userProfile={"/fwprofile"}
             />
           )}
 
@@ -312,6 +318,7 @@ const SuperAdminDashboard: React.FC = () => {
                 type="admin"
                 formatDate={formatDate}
                 isRejected
+                userProfile={"/adminprofile"}
               />
               <DataTable
                 title="Rejected Field Workers"
@@ -319,6 +326,7 @@ const SuperAdminDashboard: React.FC = () => {
                 type="fw"
                 formatDate={formatDate}
                 isRejected
+                userProfile={"/fwprofile"}
               />
             </div>
           )}

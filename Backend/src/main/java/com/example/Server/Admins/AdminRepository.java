@@ -8,6 +8,8 @@ public interface AdminRepository extends JpaRepository<AdminEntity, Long> {
 
     Optional<AdminEntity> findByEmail(String email);
 
+    Optional<AdminEntity> findById(long id);
+
     Optional<AdminEntity> findBySpecialId(String specialId);
 
 }

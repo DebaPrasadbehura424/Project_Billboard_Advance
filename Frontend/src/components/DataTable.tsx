@@ -1,4 +1,5 @@
 import { Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const DataTable = ({
   title,
@@ -8,19 +9,9 @@ export const DataTable = ({
   formatDate,
   showAllStatus = false,
   isRejected = false,
+  userProfile,
 }: any) => {
-  function handleItem(item: any): void {
-    const sessionData = {
-      id: item.id,
-      email: item.email,
-      document: item.document,
-      name: item.name,
-      phone: item.phone,
-      category: item.category,
-    };
-
-    sessionStorage.setItem("user", JSON.stringify(sessionData));
-  }
+  const navigate = useNavigate();
 
   if (data.length === 0) {
     return (
@@ -79,7 +70,9 @@ export const DataTable = ({
                   <td className="py-5 px-6">
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() => handleItem(item)}
+                        onClick={() =>
+                          navigate(`${userProfile}/${item.adminId || item.id}`)
+                        }
                         className="px-4 py-1.5 bg-gray-800 hover:bg-gray-700 text-sm rounded-xl flex items-center gap-1.5 transition"
                       >
                         <Eye size={16} /> View

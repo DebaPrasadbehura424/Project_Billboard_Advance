@@ -54,7 +54,7 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          <h2 className="text-4xl font-bold mb-2">Welcome Back</h2>
+          <h2 className="text-4xl font-bold mb-2 text-white">Welcome Back</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
             Sign in to continue helping your city
           </p>
@@ -62,7 +62,7 @@ const Login: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-white">
                 Email Address
               </label>
               <div className="relative">
@@ -84,7 +84,9 @@ const Login: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium mb-2">Password</label>
+              <label className="block text-sm font-medium mb-2  text-white">
+                Password
+              </label>
               <div className="relative">
                 <Lock
                   className="absolute left-4 top-3.5 text-gray-400"

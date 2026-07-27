@@ -30,7 +30,7 @@ export const ReportTable = ({
 
   const handleViewReport = (reportId: string | number | undefined) => {
     if (!reportId) return;
-    navigate(`/admin_dash/report/${reportId}`);
+    navigate(`/my-reports/${reportId}`);
   };
 
   const getRiskBadgeClass = (level?: string, percentage?: number | string) => {
@@ -48,7 +48,7 @@ export const ReportTable = ({
     <div className="bg-gray-900 border border-gray-800 rounded-3xl overflow-hidden">
       {/* Header */}
       <div className="p-4 sm:p-6 border-b border-gray-800 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-        <h3 className="text-xl sm:text-2xl font-bold">
+        <h3 className="text-xl sm:text-2xl font-bold text-white">
           All Reports ({data.length})
         </h3>
         <p className="text-emerald-400 font-medium text-sm sm:text-base">
@@ -81,7 +81,7 @@ export const ReportTable = ({
                   <td className="py-4 px-4 lg:px-6 font-mono text-sm text-gray-300">
                     {id ?? "—"}
                   </td>
-                  <td className="py-4 px-4 lg:px-6 font-medium">
+                  <td className="py-4 px-4 lg:px-6 font-medium text-white">
                     {report.title || "Not Given"}
                   </td>
                   <td className="py-4 px-4 lg:px-6 text-gray-400 text-sm">
