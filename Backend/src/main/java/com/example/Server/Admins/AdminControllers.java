@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +17,14 @@ import com.example.Server.jwt.JwtUtil;
 @RequestMapping("/api/admins")
 public class AdminControllers {
 
-    @Autowired
-    private AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+
+    AdminControllers(AdminRepository adminRepository, EmailService emailService) {
+        this.adminRepository = adminRepository;
+        this.emailService = emailService;
+    }
 
     // ================= REGISTER =================
 

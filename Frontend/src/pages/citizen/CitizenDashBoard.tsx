@@ -15,19 +15,21 @@ import { Button } from "../../components/Button";
 import { useCitizen } from "../../hooks/useCitizen";
 import Profile from "../private/Profile";
 import { useNavigate } from "react-router-dom";
+import HeatMap from "../public/HeatMap";
 
 const CitizenDashboard: React.FC = () => {
   const { user, reports } = useCitizen();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activePage, setActivePage] = useState<
-    "dashboard" | "myreports" | "report" | "rewards" | "profile"
+    "dashboard" | "myreports" | "report" | "rewards" | "profile" | "heatmap"
   >("dashboard");
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: Home },
     { id: "myreports", label: "My Reports", icon: FileText },
     { id: "rewards", label: "Rewards", icon: Award },
+    { id: "heatmap", label: "HeatMap", icon: Award },
     { id: "profile", label: "Profile", icon: Award },
   ];
   let navigate = useNavigate();
@@ -191,6 +193,7 @@ const CitizenDashboard: React.FC = () => {
 
           {activePage === "report" && <Report />}
           {activePage === "profile" && <Profile />}
+          {activePage === "heatmap" && <HeatMap />}
 
           {activePage === "rewards" && (
             <div className="max-w-4xl mx-auto text-center py-20">

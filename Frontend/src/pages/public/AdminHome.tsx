@@ -279,7 +279,7 @@ const AdminHome: React.FC = () => {
               <form onSubmit={handleLoginSubmit} className="space-y-8">
                 <div>
                   <label className="block text-gray-400 mb-3">
-                    Admin ID / Email
+                    Admin ID 
                   </label>
                   <input
                     type="text"

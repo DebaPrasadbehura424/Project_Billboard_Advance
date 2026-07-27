@@ -35,7 +35,7 @@ interface Report {
   category: string;
   location: string;
   riskLevel?: string;
-  status: string;
+  reportStatus: string;
   createdAt?: string;
   reportPhotoEntities: {
     id: number;
@@ -121,7 +121,7 @@ export const SuperProvider: React.FC<{ children: ReactNode }> = ({
   const liveReports = useMemo(
     () =>
       reports.filter(
-        (r) => r.status === "LIVE" || r.status?.toUpperCase() === "LIVE",
+        (r) => r.reportStatus === "LIVE" || r.reportStatus?.toUpperCase() === "LIVE",
       ),
     [reports],
   );

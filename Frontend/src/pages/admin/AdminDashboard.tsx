@@ -14,15 +14,18 @@ import {
 import { Button } from "../../components/Button";
 import { useSuper } from "../../hooks/useSuper";
 import { useNavigate } from "react-router-dom";
+import HeatMap from "../public/HeatMap";
+import axios from "axios";
 
 const AdminDashboard: React.FC = () => {
   const { reports, approvedFw, loading, error, refreshData } = useSuper();
   const navigate = useNavigate();
-  console.log(reports);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedWorker, setSelectedWorker] = useState<any>(null);
+  const [showReportModal, setShowReportModal] = useState(false);
   const [activePage, setActivePage] = useState<
-    "home" | "reports" | "fieldworkers" | "verify"
+    "home" | "reports" | "fieldworkers" | "verify" | "heatmap"
   >("home");
 
   const menuItems = [
@@ -30,13 +33,13 @@ const AdminDashboard: React.FC = () => {
     { id: "reports", label: "All Reports", icon: FileText },
     { id: "fieldworkers", label: "Field Workers", icon: Users },
     { id: "verify", label: "Sent for Verification", icon: CheckCircle },
+    { id: "heatmap", label: "HeatMap", icon: CheckCircle },
   ];
 
   const handleViewReport = (reportId: any) => {
     navigate(`/admin_dash/report/${reportId}`);
   };
 
-  // Status color helper
   const getStatusClass = (status: string) => {
     switch (status?.toUpperCase()) {
       case "WORK_DONE":
@@ -57,6 +60,30 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleAssignReport = async (worker: any, report: any) => {
+    if (!worker || !report) return;
+
+    const payload = {
+      workerId: worker.id,
+      workerName: worker.name,
+      reportId: report.reportId,
+    };
+
+    try {
+      const res = await axios.patch(`/api/fw/assignReports`, payload);
+
+      console.log("Report Assigned Successfully:", res.data);
+      alert(`✅ Report assigned successfully to ${worker.name}`);
+
+      // Refresh data after assignment
+      refreshData();
+
+      // Close modal
+      setShowReportModal(false);
+      setSelectedWorker(null);
+    } catch (err) {}
+  };
+
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden">
       {/* Sidebar */}
@@ -71,7 +98,7 @@ const AdminDashboard: React.FC = () => {
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Nagrik NaZar</h1>
+              <h1 className="text-2xl font-bold text-white">Nagrik NaZar</h1>
               <p className="text-xs text-indigo-600">Admin Portal</p>
             </div>
           </div>
@@ -91,10 +118,10 @@ const AdminDashboard: React.FC = () => {
                     setActivePage(item.id as any);
                     setIsSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-al ${
                     activePage === item.id
-                      ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-medium"
-                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "bg-indigo-50 text-black  font-medium"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800 text-white"
                   }`}
                 >
                   <Icon size={20} />
@@ -129,7 +156,7 @@ const AdminDashboard: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 text-white">
             <button className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800">
               <Bell size={22} />
             </button>
@@ -145,18 +172,22 @@ const AdminDashboard: React.FC = () => {
           </div>
         </header>
 
+        {activePage === "heatmap" && <HeatMap />}
+
         <div className="flex-1 overflow-auto p-6">
           {/* HOME */}
           {activePage === "home" && (
             <div className="max-w-7xl mx-auto space-y-8">
-              <h1 className="text-4xl font-bold">Welcome back, Admin 👋</h1>
+              <h1 className="text-4xl font-bold text-white">
+                Welcome back, Admin 👋
+              </h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                   { label: "Total Reports", value: reports.length, icon: "📋" },
                   {
                     label: "Pending",
                     value: reports.filter(
-                      (r) => r.status?.toUpperCase() === "PENDING",
+                      (r) => r.reportStatus?.toUpperCase() === "PENDING",
                     ).length,
                     icon: "⏳",
                   },
@@ -164,7 +195,7 @@ const AdminDashboard: React.FC = () => {
                     label: "In Progress",
                     value: reports.filter((r) =>
                       ["SEEN", "ACTIVATED_BY_ADMIN", "PASS_TO_WORKER"].includes(
-                        r.status?.toUpperCase() || "",
+                        r.reportStatus?.toUpperCase() || "",
                       ),
                     ).length,
                     icon: "🔄",
@@ -192,9 +223,9 @@ const AdminDashboard: React.FC = () => {
             </div>
           )}
 
-          {/* ALL REPORTS - REAL DATA */}
+          {/* ALL REPORTS */}
           {activePage === "reports" && (
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto text-white">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold">All Citizen Reports</h2>
                 <Button onClick={refreshData} variant="secondary">
@@ -245,20 +276,16 @@ const AdminDashboard: React.FC = () => {
                           </td>
                           <td className="p-6">
                             <span
-                              className={`px-4 py-1 rounded-full text-xs font-medium ${
-                                report.riskLevel === "High"
-                                  ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                                  : "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
-                              }`}
+                              className={`px-4 py-1 rounded-full text-xs font-medium ${report.riskLevel === "High" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" : "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"}`}
                             >
                               {report.riskLevel || "Medium"}
                             </span>
                           </td>
                           <td className="p-6">
                             <span
-                              className={`px-4 py-1 rounded-full text-xs font-medium ${getStatusClass(report.status)}`}
+                              className={`px-4 py-1 rounded-full text-xs font-medium ${getStatusClass(report.reportStatus)}`}
                             >
-                              {report.status}
+                              {report.reportStatus}
                             </span>
                           </td>
                           <td className="p-6 text-center">
@@ -281,7 +308,7 @@ const AdminDashboard: React.FC = () => {
 
           {/* FIELD WORKERS */}
           {activePage === "fieldworkers" && (
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto text-white">
               <h2 className="text-3xl font-bold mb-6">Field Workers</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {approvedFw.map((worker) => (
@@ -309,7 +336,14 @@ const AdminDashboard: React.FC = () => {
                     <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
                       {worker.email} • {worker.phone}
                     </p>
-                    <Button variant="primary" className="mt-6 w-full">
+                    <Button
+                      variant="primary"
+                      className="mt-6 w-full"
+                      onClick={() => {
+                        setSelectedWorker(worker);
+                        setShowReportModal(true);
+                      }}
+                    >
                       Assign Report
                     </Button>
                   </div>
@@ -320,7 +354,7 @@ const AdminDashboard: React.FC = () => {
 
           {/* VERIFY SECTION */}
           {activePage === "verify" && (
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto text-white">
               <h2 className="text-3xl font-bold mb-6">Sent for Verification</h2>
               <div className="bg-white dark:bg-gray-900 p-12 rounded-3xl shadow text-center">
                 <CheckCircle size={64} className="mx-auto text-gray-400 mb-4" />
@@ -333,6 +367,78 @@ const AdminDashboard: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Report Assignment Modal */}
+      {showReportModal && selectedWorker && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b">
+              <div>
+                <h2 className="text-2xl font-bold">Assign Report</h2>
+                <p className="text-sm text-gray-500">
+                  To: {selectedWorker.name}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowReportModal(false);
+                  setSelectedWorker(null);
+                }}
+                className="text-gray-500 hover:text-gray-700 text-3xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Scrollable Reports List */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scroll">
+              {reports.length === 0 ? (
+                <p className="text-center py-10 text-gray-500">
+                  No reports available to assign
+                </p>
+              ) : (
+                reports.map((report) => (
+                  <div
+                    key={report.reportId}
+                    className="bg-gray-50 dark:bg-gray-800 p-5 rounded-2xl border flex justify-between items-center"
+                  >
+                    <div className="flex-1">
+                      <div className="font-medium">{report.category}</div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                        {report.title}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {report.location}
+                      </p>
+                    </div>
+
+                    <Button
+                      variant="primary"
+                      onClick={() => handleAssignReport(selectedWorker, report)}
+                    >
+                      Assign
+                    </Button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t flex justify-end">
+              <button
+                onClick={() => {
+                  setShowReportModal(false);
+                  setSelectedWorker(null);
+                }}
+                className="px-6 py-3 bg-gray-200 hover:bg-gray-300 rounded-xl font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

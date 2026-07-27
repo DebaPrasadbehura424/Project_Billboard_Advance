@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +15,14 @@ import com.example.Server.jwt.JwtUtil;
 @RequestMapping("/api/citizens")
 public class CitizenControllers {
 
-        @Autowired
-        private CitizenRepository citizenRepository;
+        private final CitizenRepository citizenRepository;
 
-        @Autowired
-        private PasswordEncoder passwordEncoder;
+        private final PasswordEncoder passwordEncoder;
+
+        CitizenControllers(CitizenRepository citizenRepository, PasswordEncoder passwordEncoder) {
+                this.citizenRepository = citizenRepository;
+                this.passwordEncoder = passwordEncoder;
+        }
 
         // LOGIN
         @PostMapping("/login")

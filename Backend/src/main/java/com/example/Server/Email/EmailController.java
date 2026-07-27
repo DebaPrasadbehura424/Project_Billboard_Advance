@@ -2,7 +2,6 @@ package com.example.Server.Email;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/mail")
 public class EmailController {
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+
+    EmailController(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @PostMapping("/sent")
     public ResponseEntity<?> sentMessage(@RequestBody EmailRequest email) {

@@ -5,24 +5,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.Server.Email.EmailService;
+import com.example.Server.Reports.ReportsEntity;
+import com.example.Server.Reports.ReportsRepository;
 import com.example.Server.enums.FwStatus;
+import com.example.Server.enums.ReportStatus;
 import com.example.Server.jwt.JwtUtil;
+import com.example.dto.AssignReportDto;
 
 @RestController
 @RequestMapping("/api/fw")
 public class FwControllers {
 
-    @Autowired
-    private FwRepository fwRepository;
+    private final FwRepository fwRepository;
 
-    @Autowired
-    private EmailService emailService;
+    private final ReportsRepository reportsRepository;
+
+    private final EmailService emailService;
+
+    FwControllers(FwRepository fwRepository, ReportsRepository reportsRepository, EmailService emailService) {
+        this.fwRepository = fwRepository;
+        this.reportsRepository = reportsRepository;
+        this.emailService = emailService;
+    }
 
     @PostMapping("/apply")
     public ResponseEntity<?> applyFw(@RequestBody FwEntity fw) {
@@ -197,4 +206,26 @@ public class FwControllers {
                     .body("Invalid token");
         }
     }
+
+    @PatchMapping("/assignReports")
+    public ResponseEntity<?> assignReports(@RequestBody AssignReportDto dto) {
+        // Find report by reportId
+        Optional<ReportsEntity> reportOpt = reportsRepository.findById(dto.getReportId());
+
+        if (reportOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Report not found");
+        }
+
+        ReportsEntity report = reportOpt.get();
+
+        // Update fields
+        report.setFieldWorker(dto.getWorkerName()); // String field
+        report.setFwEntity(fwRepository.findById(dto.getWorkerId()).orElse(null));
+        report.setReportStatus(ReportStatus.PASS_TO_WORKER);
+
+        reportsRepository.save(report);
+
+        return ResponseEntity.ok("Report assigned successfully");
+    }
+
 }

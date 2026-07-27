@@ -7,7 +7,6 @@ export const ReportView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Safely get reports from whichever provider is available
   let reports: any[] = [];
   var isCitizenContext = false;
 

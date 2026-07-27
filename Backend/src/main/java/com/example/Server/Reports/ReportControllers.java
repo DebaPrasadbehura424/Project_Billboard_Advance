@@ -2,7 +2,6 @@ package com.example.Server.Reports;
 
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,11 +14,14 @@ import com.example.Server.jwt.JwtUtil;
 @RequestMapping("/api/reports")
 public class ReportControllers {
 
-    @Autowired
-    private CitizenRepository citizenRepository;
+    private final CitizenRepository citizenRepository;
 
-    @Autowired
-    private ReportsRepository reportsRepository;
+    private final ReportsRepository reportsRepository;
+
+    ReportControllers(CitizenRepository citizenRepository, ReportsRepository reportsRepository) {
+        this.citizenRepository = citizenRepository;
+        this.reportsRepository = reportsRepository;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createReport(
